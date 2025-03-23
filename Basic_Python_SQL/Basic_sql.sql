@@ -99,16 +99,26 @@ SELECT first_name, salary,
        NTILE(4) OVER (ORDER BY salary DESC) AS quartile
 FROM employees;
 
+#second highest salary in each department
+WITH RankedSalaries AS (
+    SELECT department, employee_name, salary, 
+           DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rnk
+    FROM employees
+)
+SELECT department, employee_name, salary 
+FROM RankedSalaries 
+WHERE rnk = 2;   
+
 
 #Summary: Which Window Function to Use?
-Function	    Use Case
-ROW_NUMBER()	Assigns a unique row number
-RANK()	        Ranks with gaps
-DENSE_RANK()	Ranks without gaps
-SUM() OVER()	Running total
-AVG() OVER()	Moving average
-PERCENT_RANK()	Percentile ranking
-NTILE(n)	    Divide into n buckets
+Function	           Use Case
+ROW_NUMBER()	       Assigns a unique row number
+RANK()	              Ranks with gaps
+DENSE_RANK()	       Ranks without gaps
+SUM() OVER()	       Running total
+AVG() OVER()	       Moving average
+PERCENT_RANK()       Percentile ranking
+NTILE(n)	       Divide into n buckets
 
 
 
